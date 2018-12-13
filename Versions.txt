@@ -1,0 +1,12 @@
+0.0.1 - Atual
+0.0.2 - Otimizar tamanho 
+0.0.3 - Criar mais de um perfil
+0.0.4 - Salvar os dados de sessão na memória
+0.0.5 - Atualizar a cosmética básica do app
+0.0.6 - Validar sessão(Login / Logout)
+0.0.7 - Deixar o app em background
+
+0.1.0 - Alterar dados de login
+0.1.1 - Detectar os dados de rede e login.
+
+

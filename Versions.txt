@@ -8,5 +8,5 @@
 
 0.1.0 - Alterar dados de login
 0.1.1 - Detectar os dados de rede e login.
-
+x.x.x
 

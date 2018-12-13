@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         if(getPerfilOnline() != null) {
             mEmailView.setText(getPerfilOnline().getParametros().get(0).getValor());
             mPasswordView.setText(getPerfilOnline().getParametros().get(1).getValor());
+            attemptLogin();
         }else {
             System.out.println("Impossível saber sua rede WIFI");
         }
@@ -209,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private List<Perfil> criarPerfisUEMASUL(){
-        List <Perfil> listPerfis = new ArrayList<Perfil>();
+        List <Perfil> listPerfis = new ArrayList<>();
 
         try {
             Perfil uemasulacad = new Perfil();

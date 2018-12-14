@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 public class Parametro implements Serializable {
 
-    private String  nome;
-    private String  valor;
-    private String  tipo;
+    private String nome;
+    private String valor;
+    private String rotulo;
+    private String tipo;
 
-    public Parametro(String nome, String valor, String tipo){
+    public Parametro(String nome, String valor, String tipo) {
         setNome(nome);
         setValor(valor);
         setTipo(tipo);
@@ -36,6 +37,14 @@ public class Parametro implements Serializable {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getRotulo() {
+        return this.rotulo;
+    }
+
+    public void setRotulo(String rotulo) {
+        this.rotulo = rotulo;
     }
 
 }

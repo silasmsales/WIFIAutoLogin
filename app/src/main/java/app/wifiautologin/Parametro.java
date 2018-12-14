@@ -40,7 +40,7 @@ public class Parametro implements Serializable {
     }
 
     public String getRotulo() {
-        return rotulo;
+        return this.rotulo;
     }
 
     public void setRotulo(String rotulo) {

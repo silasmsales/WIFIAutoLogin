@@ -21,13 +21,13 @@ public class Autenticador extends AsyncTask {
     @Override
     protected Object doInBackground(Object[] objects) {
 
-        Perfil perfil = null;
+        Perfil perfil;
 
-        if (objects.length >= 0)
+        if (objects != null)
         {
             perfil = (Perfil) objects[0];
         }else{
-            System.err.println("Nenhuma autenticação válida");
+            System.err.println("doInBackground : " + "Nenhuma autenticação válida");
             return null;
         }
 
@@ -67,12 +67,12 @@ public class Autenticador extends AsyncTask {
 //                System.out.print((char)c);
 
         } catch (Exception e) {
-            System.err.println("Erro : " + e.toString());
+            System.err.println("doInBackground :  : " + e.toString());
         }
 
         cancel(false);
         if(isCancelled())
-            System.out.println("Concluído");
+            System.out.println("doInBackground : Concluído");
 
         return true;
     }

@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,12 +43,15 @@ public class LoginActivity extends AppCompatActivity {
     private MinhasWIFI minhasWIFI = null;
     private static String arquivo = "redes_salvas.obj";
     private AlertDialog.Builder alertDialog;
+    private File dir_arquivos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
+        dir_arquivos = getApplicationContext().getFilesDir();
 
         alertDialog = new AlertDialog.Builder(this);
         alertDialog.setPositiveButton(R.string.login_success, new DialogInterface.OnClickListener() {
@@ -58,21 +62,17 @@ public class LoginActivity extends AppCompatActivity {
         });
         alertDialog.create();
 
-        if(Armazenamento.jaExisteRegistro(getApplicationContext())){
-            minhasWIFI = Armazenamento.resgastarRedes(getApplicationContext());
-        }else{
-            minhasWIFI = new MinhasWIFI(criarPerfisUEMASUL());
-            Armazenamento.salvarRedes(minhasWIFI, getApplicationContext());
-        }
+        minhasWIFI = new MinhasWIFI(criarPerfisUEMASUL(), dir_arquivos);
 
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mEmailView = findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
+
         if(getPerfilOnline() != null) {
             mEmailView.setText(getPerfilOnline().getParametros().get(0).getValor());
             mPasswordView.setText(getPerfilOnline().getParametros().get(1).getValor());
             attemptLogin();
         }else {
-            System.out.println("Impossível saber sua rede WIFI");
+            System.out.println("onCreate : " + "Impossível saber sua rede WIFI");
         }
 
 
@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,18 +142,20 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 
-
+            String a = "a";
 
             minhasWIFI.getWIFIbyDescricao("UEMASULACAD").getParametros().get(0).setValor(auth_user);
             minhasWIFI.getWIFIbyDescricao("UEMASULACAD").getParametros().get(1).setValor(auth_pass);
             minhasWIFI.getWIFIbyDescricao("UEMASULADM").getParametros().get(0).setValor(auth_user);
             minhasWIFI.getWIFIbyDescricao("UEMASULADM").getParametros().get(1).setValor(auth_pass);
+            minhasWIFI.save();
 
-            Armazenamento.salvarRedes(minhasWIFI, getApplicationContext());
 
+            String b = "b";
 
             Autenticador autenticador = new Autenticador();
-            autenticador.execute(getPerfilOnline());
+            Perfil perfil = getPerfilOnline();
+            autenticador.execute(perfil);
 
             alertDialog.setMessage("Logado com sucesso na rede " + getWIFIName()).show();
 
@@ -192,25 +194,25 @@ public class LoginActivity extends AppCompatActivity {
                 if(wifiInfo.getSupplicantState() == SupplicantState.COMPLETED){
                     WIFIName = wifiInfo.getSSID();
                 }else{
-                    System.out.println("Não foi possivel obter o nome da rede");
+                    System.out.println("getWIFIName : Não foi possivel obter o nome da rede");
                 }
 //              Versao antiga do android API 21+
                 if (networkInfo.isConnected() && WIFIName.equals("<unknown ssid>")){
                     WIFIName = networkInfo.getExtraInfo().substring(1, networkInfo.getExtraInfo().length()-1);
                 }
 
-                System.err.println(WIFIName);
+                System.err.println("getWIFIName : " + WIFIName);
             }else{
-                System.out.println("Não conectado em um WIFI");
+                System.out.println("getWIFIName : " + "Não conectado em um WIFI");
             }
         }else{
-            System.err.println("Nenhuma conexão ativa");
+            System.err.println("getWIFIName : " + "Nenhuma conexão ativa");
         }
         return WIFIName;
     }
 
-    private List<Perfil> criarPerfisUEMASUL(){
-        List <Perfil> listPerfis = new ArrayList<>();
+    private ArrayList<Perfil> criarPerfisUEMASUL(){
+        ArrayList<Perfil> listPerfis = new ArrayList<>();
 
         try {
             Perfil uemasulacad = new Perfil();
@@ -233,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
             listPerfis.add(uemasuladm);
 
         } catch (MalformedURLException e) {
-            System.err.println(e.getMessage());
+            System.err.println("criarPerfisUEMASUL : " + e.getMessage());
         }
 
         return listPerfis;

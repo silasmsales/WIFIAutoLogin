@@ -9,10 +9,14 @@ public class Parametro implements Serializable {
     private String rotulo;
     private String tipo;
 
-    public Parametro(String nome, String valor, String tipo) {
+    public Parametro(){
+    }
+
+    public Parametro(String nome, String valor, String tipo, String rotulo) {
         setNome(nome);
         setValor(valor);
         setTipo(tipo);
+        setRotulo(rotulo);
     }
 
     public String getNome() {

@@ -9,24 +9,24 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ListIterator;
 
 public class MinhasWIFI implements Serializable {
 
-    private static final String ARQUIVO = "REDES_SALVAS.OBJ";
     private static FileInputStream fis_redes_salvas;
     private static ObjectInputStream ois_redes_salvas;
     private static FileOutputStream fos_redes_salvas;
     private static ObjectOutputStream oos_redes_salvas;
-    private static File DIRETORIO;
+    private static File arquivo;
     private ArrayList<Perfil> perfis;
 
-    public MinhasWIFI(File diretorio){
-        this(new ArrayList<Perfil>(), diretorio);
+    public MinhasWIFI(File arquivo){
+        this(new ArrayList<Perfil>(), arquivo);
     }
 
-    protected MinhasWIFI(ArrayList<Perfil> perfis, File diretorio){
-        DIRETORIO = diretorio;
+    protected MinhasWIFI(ArrayList<Perfil> perfis, File arquivo){
+        this.arquivo = arquivo;
 
         if (jaExisteRegistro())
         {
@@ -40,7 +40,7 @@ public class MinhasWIFI implements Serializable {
     protected void save() {
         try {
 
-            File file = new File(DIRETORIO, ARQUIVO);
+            File file = new File(arquivo.toURI());
 
             fos_redes_salvas = new FileOutputStream(file);
             oos_redes_salvas = new ObjectOutputStream(fos_redes_salvas);
@@ -49,21 +49,21 @@ public class MinhasWIFI implements Serializable {
             fos_redes_salvas.close();
 
         } catch (FileNotFoundException e) {
-            System.out.println("Erro 0: " + e.getMessage());
+            System.out.println(MinhasWIFI.class + " > save > " + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private static boolean jaExisteRegistro(){
-        File file = new File(DIRETORIO, ARQUIVO);
+        File file = new File(arquivo.toURI());
         return file.exists();
     }
 
     protected ArrayList<Perfil> getPerfis(){
         try {
 
-            File file = new File(DIRETORIO, ARQUIVO);
+            File file = new File(arquivo.toURI());
 
             fis_redes_salvas = new FileInputStream(file);
             ois_redes_salvas = new ObjectInputStream(fis_redes_salvas);
@@ -72,7 +72,7 @@ public class MinhasWIFI implements Serializable {
             fis_redes_salvas.close();
 
         } catch (FileNotFoundException e) {
-            System.out.println("Erro 0: " + e.getMessage());
+            System.out.println(MinhasWIFI.class + " > getPerfis > " +  e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -83,7 +83,12 @@ public class MinhasWIFI implements Serializable {
     }
 
     public void addPerfil(Perfil perfil){
-        this.perfis.add(perfil);
+
+        if(getWIFIbyDescricao(perfil.getDescricao()) != null)
+        {
+            perfis.remove(getWIFIbyDescricao(perfil.getDescricao()));
+        }
+        perfis.add(perfil);
         save();
     }
 
@@ -99,4 +104,27 @@ public class MinhasWIFI implements Serializable {
         return null;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        Iterator iterator  = perfis.iterator();
+        Parametro parametro;
+        Perfil perfil;
+        while (iterator.hasNext()){
+            perfil = (Perfil) iterator.next();
+            stringBuilder.append("\n@" + MinhasWIFI.class + "{\n");
+            stringBuilder.append("{ Descrição : " + perfil.getDescricao() + "},\n");
+            stringBuilder.append("{ URL Login : " + perfil.getUrlLogin() + "},\n");
+            stringBuilder.append("{ URL Login : " + perfil.getUrlLogin() + "},\n");
+            stringBuilder.append("{ URL Logout: " + perfil.getUrlLogout() + "},\n");
+            Iterator i1 = perfil.getParametros().iterator();
+            while (i1.hasNext()){
+                parametro = (Parametro) i1.next();
+                stringBuilder.append("{ Parâmetros : ");
+                stringBuilder.append("\t\t[ "+parametro.getNome()+" ] [ " + parametro.getValor() + "] [ " + parametro.getRotulo() + " ] [ " + parametro.getTipo()+" ] }\n");
+            }
+            stringBuilder.append("}");
+        }
+        return stringBuilder.toString();
+    }
 }

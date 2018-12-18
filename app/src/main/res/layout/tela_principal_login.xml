@@ -15,12 +15,12 @@
 
 
     <ProgressBar
-        android:id="@+id/progressbarcirculo"
+        android:id="@+id/progressbar_circulo"
         android:layout_width="342dp"
         android:layout_height="453dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/progressbar_circulo_verde"
-        android:progress="80" />
+        android:indeterminateTint="#FF0000"
+        android:progress="80"/>
 
 </RelativeLayout>

@@ -1,14 +1,11 @@
 package app.wifiautologin;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,9 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-/**
- * A login screen that offers login via email/password.
- */
+
 public class LoginActivity extends AppCompatActivity {
 
 
@@ -41,9 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     private MinhasWIFI minhasWIFI = null;
-    private static String arquivo = "redes_salvas.obj";
     private AlertDialog.Builder alertDialog;
-    private File dir_arquivos;
+    private File arquivo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,30 +45,14 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Set up the login form.
 
-        dir_arquivos = getApplicationContext().getFilesDir();
+        arquivo = new File(getApplicationContext().getFilesDir(), "minhas_redes.obj");
 
-        alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setPositiveButton(R.string.login_success, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                moveTaskToBack(true);
-            }
-        });
-        alertDialog.create();
+        minhasWIFI = new MinhasWIFI(criarPerfisUEMASUL(), arquivo);
 
-        minhasWIFI = new MinhasWIFI(criarPerfisUEMASUL(), dir_arquivos);
+
 
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
-
-        if(getPerfilOnline() != null) {
-            mEmailView.setText(getPerfilOnline().getParametros().get(0).getValor());
-            mPasswordView.setText(getPerfilOnline().getParametros().get(1).getValor());
-            attemptLogin();
-        }else {
-            System.out.println("onCreate : " + "Impossível saber sua rede WIFI");
-        }
-
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -99,19 +77,18 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void attemptLogin() {
+    private void attemptLogin(){
 
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
 
+        System.out.println(minhasWIFI.toString());
+
         // Store values at the time of the login attempt.
         String auth_user = mEmailView.getText().toString().trim();
         String auth_pass = mPasswordView.getText().toString().trim();
-
-
-
 
         boolean cancel = false;
         View focusView = null;
@@ -142,22 +119,16 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 
-            String a = "a";
 
-            minhasWIFI.getWIFIbyDescricao("UEMASULACAD").getParametros().get(0).setValor(auth_user);
-            minhasWIFI.getWIFIbyDescricao("UEMASULACAD").getParametros().get(1).setValor(auth_pass);
-            minhasWIFI.getWIFIbyDescricao("UEMASULADM").getParametros().get(0).setValor(auth_user);
-            minhasWIFI.getWIFIbyDescricao("UEMASULADM").getParametros().get(1).setValor(auth_pass);
-            minhasWIFI.save();
+            if(getWIFIName() != null)
+            {
+                minhasWIFI.getWIFIbyDescricao(getWIFIName()).getParametros().get(0).setValor(auth_user);
+                minhasWIFI.getWIFIbyDescricao(getWIFIName()).getParametros().get(1).setValor(auth_pass);
+                minhasWIFI.save();
+            }
 
-
-            String b = "b";
-
-            Autenticador autenticador = new Autenticador();
-            Perfil perfil = getPerfilOnline();
-            autenticador.execute(perfil);
-
-            alertDialog.setMessage("Logado com sucesso na rede " + getWIFIName()).show();
+            Autenticador autenticador  = new Autenticador();
+            autenticador.execute(getPerfilOnline());
 
         }
     }
@@ -194,19 +165,19 @@ public class LoginActivity extends AppCompatActivity {
                 if(wifiInfo.getSupplicantState() == SupplicantState.COMPLETED){
                     WIFIName = wifiInfo.getSSID();
                 }else{
-                    System.out.println("getWIFIName : Não foi possivel obter o nome da rede");
+                    System.out.println(LoginActivity.class + " > getPerfilOnline > Não foi possivel obter o nome da rede");
                 }
 //              Versao antiga do android API 21+
                 if (networkInfo.isConnected() && WIFIName.equals("<unknown ssid>")){
                     WIFIName = networkInfo.getExtraInfo().substring(1, networkInfo.getExtraInfo().length()-1);
                 }
 
-                System.err.println("getWIFIName : " + WIFIName);
+                System.out.println(LoginActivity.class + " > getWIFIName > "+  WIFIName);
             }else{
-                System.out.println("getWIFIName : " + "Não conectado em um WIFI");
+                System.out.println(LoginActivity.class + " > getWIFIName > Não conectado em uma WIFI");
             }
         }else{
-            System.err.println("getWIFIName : " + "Nenhuma conexão ativa");
+            System.err.println(LoginActivity.class + " > getWIFIName > Nenhuma conexão ativa");
         }
         return WIFIName;
     }
@@ -222,20 +193,20 @@ public class LoginActivity extends AppCompatActivity {
             uemasuladm.setDescricao("UEMASULADM");
 
             uemasulacad.setUrlLogin(new URL("http", "10.0.8.1", 8008, "index.php?zone=aluno"));
-            uemasulacad.addParametro(new Parametro("auth_user", null, "text"));
-            uemasulacad.addParametro(new Parametro("auth_pass", null, "password"));
-            uemasulacad.addParametro(new Parametro("accept", "submit", "submit"));
+            uemasulacad.addParametro(new Parametro("auth_user", null, "text", null));
+            uemasulacad.addParametro(new Parametro("auth_pass", null, "password", null));
+            uemasulacad.addParametro(new Parametro("accept", "submit", "submit", null));
 
             uemasuladm.setUrlLogin(new URL("http", "10.0.12.1", 8002, "index.php?zone=pfsenseadm"));
-            uemasuladm.addParametro(new Parametro("auth_user", null, "text"));
-            uemasuladm.addParametro(new Parametro("auth_pass", null, "password"));
-            uemasuladm.addParametro(new Parametro("accept", "submit", "submit"));
+            uemasuladm.addParametro(new Parametro("auth_user", null, "text", null));
+            uemasuladm.addParametro(new Parametro("auth_pass", null, "password", null));
+            uemasuladm.addParametro(new Parametro("accept", "submit", "submit", null));
 
             listPerfis.add(uemasulacad);
             listPerfis.add(uemasuladm);
 
         } catch (MalformedURLException e) {
-            System.err.println("criarPerfisUEMASUL : " + e.getMessage());
+            System.err.println(LoginActivity.class + " > criarPerfisUEMASUL> " + e.getMessage());
         }
 
         return listPerfis;

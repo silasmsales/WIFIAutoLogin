@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.tela_cadastro_login);
         // Set up the login form.
 
         arquivo = new File(getApplicationContext().getFilesDir(), "minhas_redes.obj");
@@ -221,4 +221,3 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
-

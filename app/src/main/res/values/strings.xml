@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WIFI AutoLogin</string>
+    <string name="app_name">AutoLogin</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Matricula / CPF</string>
     <string name="prompt_password">Senha</string>
@@ -10,4 +10,8 @@
     <string name="error_incorrect_password">Senha incorreta</string>
     <string name="error_field_required">Campo obrigatório</string>
     <string name="login_success">Ok</string>
+    <string name="digite_sua_senha">Senha:</string>
+    <string name="statusConexao">Autenticando</string>
+    <string name="matricula_cpf">Matrícula / CPF</string>
+    <string name="text_bt_avancar">Avançar</string>
 </resources>

@@ -1,14 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="14dp"
-    android:shape="rectangle">
-
-    <solid android:color="#2AD0FF"/>
-
-    <corners
-        android:bottomLeftRadius="14dp"
-        android:bottomRightRadius="14dp"
-        android:topLeftRadius="14dp"
-        android:topRightRadius="14dp" />
-
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/botao_clicado" android:state_pressed="true" /> <!-- pressionado -->
+    <item android:drawable="@drawable/botao_clicado" android:state_focused="true" /> <!-- com foco -->
+    <item android:drawable="@drawable/botao_normal" /> <!-- normal-->
+</selector>

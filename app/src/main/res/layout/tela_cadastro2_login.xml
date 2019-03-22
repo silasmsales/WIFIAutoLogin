@@ -11,7 +11,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:windowSoftInputMode="adjustResize"
-    tools:context=".LoginActivity">
+    tools:context=".Tela_cadastro2">
 
 
     <ScrollView
@@ -26,41 +26,43 @@
             android:orientation="vertical"
             android:padding="15dp">
 
+
             <TextView
-                android:id="@+id/textMatricula"
+                android:id="@+id/textSenha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="150dp"
                 android:fontFamily="@font/archivo_black"
                 android:padding="10dp"
-                android:text="@string/matricula_cpf"
+                android:text="@string/digite_sua_senha"
                 android:textColor="#000000"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
 
-            <AutoCompleteTextView
-                android:id="@+id/email"
+            <EditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bordas_edittext_arredondadas"
-                android:focusable="true"
                 android:gravity="center_horizontal"
-                android:inputType="textImeMultiLine"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:paddingBottom="1dp"
                 android:singleLine="true"
-                android:imeOptions="actionDone"
                 android:textColor="@color/branco"
                 android:textCursorDrawable="@color/branco"
                 android:textSize="38sp" />
 
             <View
-                android:id="@+id/linha"
+                android:id="@+id/linha2"
                 android:layout_width="200dp"
                 android:layout_height="0.4dp"
                 android:layout_gravity="center"
@@ -69,15 +71,14 @@
 
 
             <Button
-                android:id="@+id/bt_avancar"
+                android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/botao_arrendondado"
-                android:onClick="avancar"
-                android:text="@string/text_bt_avancar"
+                android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
         </LinearLayout>
